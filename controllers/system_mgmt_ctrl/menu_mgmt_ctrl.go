@@ -1,9 +1,10 @@
 package system_mgmt_ctrl
 
 import (
-	"cook-book-backEnd/config"
-	"cook-book-backEnd/models"
-	"cook-book-backEnd/services/system_mgmt_srv"
+	"cook-book-admin-backend/config"
+	"cook-book-admin-backend/models"
+	"cook-book-admin-backend/services/system_mgmt_srv"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -17,8 +18,20 @@ func NewMenuMgmtController(menuMgmtService system_mgmt_srv.MenuMgmtService) *Men
 	return &MenuMgmtController{menuMgmtService}
 }
 
-func (m *MenuMgmtController) GetMenus(c *gin.Context) {
+// GetAsyncRoutes 获取异步路由
+func (m *MenuMgmtController) GetAsyncRoutes(c *gin.Context) {
+	routes, err := m.menuMgmtService.GetAsyncRoutes()
+	if err != nil {
+		fmt.Println("GetAsyncRoutes==err", err)
+		c.JSONP(http.StatusInternalServerError, err)
+		return
+	}
+	// 返回数据
+	response := config.NewResponse(http.StatusOK, true, "获取成功", routes)
+	c.JSON(http.StatusOK, response)
+}
 
+func (m *MenuMgmtController) GetMenus(c *gin.Context) {
 	var request models.GetMenuRequest
 	if err := c.ShouldBind(&request); err != nil {
 		errResponse := config.NewResponse(http.StatusInternalServerError, false, err.Error(), nil)
@@ -100,7 +113,7 @@ func (m *MenuMgmtController) UpdateMenu(c *gin.Context) {
 }
 
 func (m *MenuMgmtController) DeleteMenu(c *gin.Context) {
-	id := c.Query("id")
+	id := c.Param("id")
 	if id == "" {
 		errResponse := config.NewResponse(http.StatusBadRequest, false, "参数错误", nil)
 		c.JSON(http.StatusBadRequest, errResponse)
