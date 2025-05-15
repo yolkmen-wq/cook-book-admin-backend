@@ -12,16 +12,14 @@ import (
 	"log"
 )
 
-// 定义一个密钥
-var SecretKey = []byte("lyf123456")
-
 // 定义全局变量
 var (
-	region        string // 存储区域
-	bucketName    string // 存储空间名称
-	AccesskeyIdid string // 阿里云AccessKeyId
-	Signature     string // 阿里云Signature
-	Endpoint      string // 存储空间Endpoint
+	SecretKey     = []byte("lyf123456") // 密钥
+	region        string                // 存储区域
+	bucketName    string                // 存储空间名称
+	AccesskeyIdid string                // 阿里云AccessKeyId
+	Signature     string                // 阿里云Signature
+	Endpoint      string                // 存储空间Endpoint
 	DB            *gorm.DB
 	RedisClient   *redis.Client
 	Client        *oss.Client

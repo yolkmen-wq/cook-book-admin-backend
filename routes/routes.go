@@ -2,6 +2,7 @@ package routes
 
 import (
 	"cook-book-admin-backend/routes/article_routes"
+	"cook-book-admin-backend/routes/emoji_routes"
 	"cook-book-admin-backend/routes/system_mgmt_routes"
 	"cook-book-admin-backend/routes/system_mon_routes"
 	"github.com/gin-gonic/gin"
@@ -20,4 +21,5 @@ func InitRoutes(r *gin.Engine, rg *gin.RouterGroup) {
 	article_routes.SetupArticleMgmtRoutes(r, rg)
 	article_routes.SetupArticleCatRoutes(r, rg)
 	article_routes.SetupCarouselRoutes(r, rg)
+	emoji_routes.SetupEmojiMgmtRoutes(r, rg)
 }
