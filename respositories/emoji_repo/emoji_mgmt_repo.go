@@ -27,6 +27,10 @@ func (emp *EmojiMgmtRepository) GetEmojiList(req *models.GetEmojisRequest) ([]mo
 		db = db.Where("name LIKE ?", "%"+req.Name+"%")
 	}
 
+	if req.CategoryId != "" {
+		db = db.Where("category_id = ?", req.CategoryId)
+	}
+
 	if req.Status != nil {
 		db = db.Where("status = ?", req.Status)
 	}
@@ -53,6 +57,10 @@ func (emp *EmojiMgmtRepository) GetEmojiList(req *models.GetEmojisRequest) ([]mo
 	db = db.Offset((req.PageNum - 1) * req.PageSize).Limit(req.PageSize)
 
 	err := db.Find(&emojis).Error
+
+	for i, v := range emojis {
+		emp.db.Table("dict_data").Select("dict_label").Where("dict_value = ?", v.CategoryId).Scan(&emojis[i].CategoryName)
+	}
 	if err != nil {
 		return nil, 0, 0, 0, err
 	}
@@ -66,16 +74,24 @@ func (emp *EmojiMgmtRepository) AddEmoji(emoji *models.Emoji) error {
 
 // 更新表情包
 func (emp *EmojiMgmtRepository) UpdateEmoji(emoji *models.Emoji) error {
-	err := emp.db.Model(&models.Emoji{}).Where("id = ?", emoji.ID).Updates(emoji).Error
+	err := emp.db.Model(emoji).Updates(&emoji).Error
 	if err != nil {
 		return err
 	}
+
+	if emoji.Status == 0 {
+		err = emp.db.Model(&models.Emoji{}).Where("id = ?", emoji.ID).UpdateColumn("status", emoji.Status).Error
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
 // 删除表情包
 func (emp *EmojiMgmtRepository) DeleteEmoji(id int64) error {
-	err := emp.db.Delete(&models.Article{}, id).Error
+	err := emp.db.Delete(&models.Emoji{}, id).Error
 	if err != nil {
 		return err
 	}

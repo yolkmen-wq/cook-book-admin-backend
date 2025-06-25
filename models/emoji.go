@@ -4,21 +4,24 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"time"
 )
 
 type Emoji struct {
-	ID         int    `json:"id" gorm:"column:id;primary_key"`
-	CategoryId string `json:"categoryId" gorm:"column:category_id"`
-	Name       string `json:"name" gorm:"column:name"`
-	Url        string `json:"url" gorm:"column:url"`
-	Unicode    string `json:"unicode" gorm:"column:unicode"`
-	Status     int8   `json:"status" gorm:"column:status"`
-	CreatedAt  string `json:"createdTime" gorm:"column:created_at;type:datetime;autoCreateTime;"`
-	UpdatedAt  string `json:"updatedTime" gorm:"column:updated_at;type:datetime;autoUpdateTime;"`
+	ID           int       `json:"id" gorm:"column:id;primary_key"`
+	CategoryId   string    `json:"categoryId" gorm:"column:category_id"`
+	CategoryName string    `json:"categoryName" gorm:"column:category_name"`
+	Name         string    `json:"name" gorm:"column:name"`
+	Url          string    `json:"url" gorm:"column:url"`
+	Unicode      string    `json:"unicode" gorm:"column:unicode;type:varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"`
+	Status       int8      `json:"status" gorm:"column:status"`
+	CreatedAt    time.Time `json:"createdTime" gorm:"column:created_at;type:datetime;autoCreateTime;"`
+	UpdatedAt    time.Time `json:"updatedTime" gorm:"column:updated_at;type:datetime;autoUpdateTime;"`
 }
 
 type GetEmojisRequest struct {
 	Name        string   `json:"name"`
+	CategoryId  string   `json:"categoryId"`
 	Status      *int8    `json:"status"`
 	CreatedTime []string `json:"createdTime"`
 	PageNum     int      `json:"pageNum"`
